@@ -86,12 +86,25 @@ class backTesting :
         print('최대 낙폭 (MDD) : %s' % self.mdd)
         print('='*40)
 
+    # 테스트 코드
+    def test(self) :
+        self.daily_data['noise'] = 1 - abs(self.daily_data['open'] - self.daily_data['close']) / (self.daily_data['high'] - self.daily_data['low'])
+        print('noise : \n%s' % self.daily_data['noise'])
+        print('-'*40)
+        self.daily_data['noise_ma20'] = self.daily_data['noise'].rolling(window=20, min_periods=1).mean()
+        print('noise_ma20 : \n%s' % self.daily_data['noise_ma20'])
+        print('-'*40)
+        self.daily_data['range'] = self.daily_data['high'] - self.daily_data['low']
+        print('변동폭 : \n%s' % self.daily_data['range'].shift(1))
+    
 # 일봉 데이터
 # count : 봉 개수 / to : '이전 날 까지의 봉 가져오기' ex. '20240314'
 # interval : 'day'/'minute60'/'month'
 # period : 조회주기( count 200 이하는 무시 )
-df = pyupbit.get_ohlcv("KRW-BTC", interval='day', count=180)
+df = pyupbit.get_ohlcv("KRW-BTC", interval='day', count=5)
 # 초기 자금 100만원
 backtest = backTesting(df, 1000000)
 # 실행
-backtest.execute()
+#backtest.execute()
+# 테스트 실행
+backtest.test()
