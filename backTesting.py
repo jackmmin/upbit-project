@@ -1,5 +1,7 @@
 import pyupbit
 import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
 
 class backTesting :
     # 생성자
@@ -23,9 +25,9 @@ class backTesting :
     # 실행
     def execute(self) :
 
-        # 노이즈 계산 ( 1- 절대값(시가 - 종가) / (고가 - 저가) )
+        # K 변동폭 계산( 1- 절대값(시가 - 종가) / (고가 - 저가) )
         self.daily_data['noise'] = 1 - abs(self.daily_data['open'] - self.daily_data['close']) / (self.daily_data['high'] - self.daily_data['low'])
-        # 노이즈 20일 평균
+        # K 변동폭 20일 평균
         self.daily_data['noise_ma20'] = self.daily_data['noise'].rolling(window=20, min_periods=1).mean()
 
         # 변동폭 ( 고가 - 저가 )
@@ -75,9 +77,9 @@ class backTesting :
         print('='*40)
         print('테스트 결과')
         print('-'*40)
-        print('총 거래 횟수 : %s' %self.trade_count)
-        print('승리 횟수 : %s' %self.win_count)
-        print('승률 : %s' %(self.win_count / self.trade_count * 100))
+        print('총 거래 횟수 : %s' % self.trade_count)
+        print('승리 횟수 : %s' % self.win_count)
+        if self.win_count != 0: print('승률 : %s' %(self.win_count / self.trade_count * 100))
         print('누적 수익률 : %s' % self.accumulated_ror)
         print('처음 잔액 : %s' % self.start_cash)
         print('현재 잔액 : %s' % self.current_cash)
@@ -99,12 +101,12 @@ class backTesting :
     
 # 일봉 데이터
 # count : 봉 개수 / to : '이전 날 까지의 봉 가져오기' ex. '20240314'
-# interval : 'day'/'minute60'/'month'
+# interval : 'day' / 'minute60' / 'month'
 # period : 조회주기( count 200 이하는 무시 )
-df = pyupbit.get_ohlcv("KRW-BTC", interval='day', count=5)
+df = pyupbit.get_ohlcv("KRW-BTC", interval='day', count=10)
 # 초기 자금 100만원
 backtest = backTesting(df, 1000000)
 # 실행
-#backtest.execute()
+backtest.execute()
 # 테스트 실행
-backtest.test()
+# backtest.test()
