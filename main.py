@@ -7,7 +7,10 @@ def main():
     df = get_price_data()
     df = add_moving_averages(df)
     df = run_backtest(df)
-    plot_backtest(df)
+    # print(df)
+    df.to_csv("coin_strategy_result.csv", index=False)
+
+    # plot_backtest(df)
 
 if __name__ == "__main__":
     main()
